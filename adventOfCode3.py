@@ -8,7 +8,7 @@ Created on Fri Nov 11 13:42:21 2022
 import numpy as np
 
 fContent = []
-with open("D:\Dokumenty\Python\Advent of Code 2021\input3.txt") as f:
+with open("input3.txt") as f:
     for line in f:  #loading the file into a np.array
         fContent.append([digit for digit in str(line).strip()])  #splitting each entry into digits
 fContent = (np.array(fContent)).transpose()  #table of digits- for ease of iteration (over rows) the table is transposed

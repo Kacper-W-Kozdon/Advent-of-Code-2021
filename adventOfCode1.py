@@ -8,7 +8,7 @@ Created on Wed Nov  9 11:49:35 2022
 import numpy as np
 
 fContent = []
-with open("D:\Dokumenty\Python\Advent of Code 2021\input1.txt") as f:
+with open("input1.txt") as f:
     for line in f:  #loading the file into a np.array
         fContent.append(int(line))
 fContent = np.array(fContent)  #table of measutements

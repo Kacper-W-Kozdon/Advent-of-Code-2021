@@ -9,7 +9,7 @@ import numpy as np
 
 def load_files():
     fContent = []
-    with open("D:\Dokumenty\Python\Advent of Code 2021\input4.txt") as f:
+    with open("input4.txt") as f:
             randomNumbers = f.readline().strip().split(",")  #loading the first line of the file into a separate list
             for (lineIndex, line) in enumerate(f):  #loading the file into an np.array
                 if bool(line.strip("\n").split()):
