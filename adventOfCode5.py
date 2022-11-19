@@ -30,9 +30,9 @@ def def_board(boardCorner = corner(fContent = load_files()[0])):
     boardShape = board.shape
     return board, boardShape
 
-def subboard(board = def_board()[0], row = load_files()[0].astype(int)):
+def subboard(board = def_board()[0], row = load_files()[0].astype(int), diagonal = False):
     size = 0
-    subboard = [0]
+    subboard = np.array([0])
     size1 = 1
     size2 = 1
     # print(row)
@@ -54,52 +54,69 @@ def subboard(board = def_board()[0], row = load_files()[0].astype(int)):
         # print(subboard.shape)
         subboard[np.min([row[0], row[2]]) : size1 + 1, row[1]] =+ 1
         # print(subboard.shape)
-    elif row[1] < row[3]:   #dwa ostatnie- elif i else- wymagają przestawienia def subboard4
+    # elif row[1] < row[3]:   #dwa ostatnie- elif i else- wymagają przestawienia def subboard4
         # print("c")
-        size = row[3] - row[1]
-        size1 = row[3]
-        size2 = row[3]
-        subboard = np.diag(np.ones(row[3] + 1))
-        subboard[:row[1], :row[1]] = 0
+        # if diagonal:
+            # size = row[3] - row[1]
+            # size1 = row[3]
+            # size2 = row[3]
+            # subboard = np.diag(np.ones(row[3] + 1))
+            # subboard[:row[1], :row[1]] = 0
         # print("test: ", size, np.sum(subboard))
     else:
+        pass
         # row[1] > row[3]
         # print("d")
         # print(np.diag(np.ones(row[1] - row[3])))
-        size = row[1] - row[3]
-        size1 = row[1]
-        size2 = row[1]
-        subboard = np.diag(np.ones(row[1] + 1))
-        subboard[:row[3], :row[3]] = 0
-        subboard = np.fliplr(subboard)
+    if diagonal:
+        size = np.absolute(row[3] - row[1]) + 1
+        # print("diagonal size: ", size)
+            # size = row[1] - row[3]
+            # size1 = row[1]
+            # size2 = row[1]
+            # subboard = np.diag(np.ones(row[1] + 1))
+            # subboard[:row[3], :row[3]] = 0
+            # subboard
     # y = [row[0], row[2]]
     # x = [row[1], row[3]]
     # print("subboard shape: ", board.shape)
     # print(np.where(board == 1))
     # print("size: ", board[0 : size1 + 1, 0 : size2 + 1].shape)
-    board[0 : size1 + 1, 0 : size2 + 1] =+ subboard
+    if row[0] == row[2] or row[1] == row[3]:
+        board[0 : size1 + 1, 0 : size2 + 1] =+ subboard
+    if diagonal and (row[0] != row[2] and row[1] != row[3]):
+        if row[1] - row[3] == row[0] - row[2]:
+            # print("size: ", bool(row[1] > row[3]), board[row[0] : row[2] + 1, row[1] : row[3] + 1].shape, row[0], row[2], row[1], row[3])
+            board[min([row[0], row[2]]) : max([row[0], row[2]])  + 1, min([row[3], row[1]]) : max([row[3], row[1]]) + 1] = np.diag(np.ones(size))
+            
+        if row[1] - row[3] == row[2] - row[0]:
+            board[min([row[0], row[2]]) : max([row[0], row[2]])  + 1, min([row[3], row[1]]) : max([row[3], row[1]]) + 1] = np.flipud(np.diag(np.ones(size)))
     # print(np.where(board == 1))
     return board, subboard
 
-def locations(fContent = load_files()[0], board = def_board()[0]):
+def locations(fContent = load_files()[0], board = def_board()[0], diagonal = False):
     # for row in fContent:
         # print(row.astype(int))
     # locations = np.apply_along_axis(lambda row: board[range(row.astype(int)[0], row.astype(int)[2]), range(row.astype(int)[1], row.astype(int)[3])] + 1, 1, fContent)
+    diag = diagonal
     locations = np.apply_along_axis(lambda row: row.astype(int), 1, fContent)
     # print("board shape: ", board.shape)
     # board[locations[0, 0] : locations[0, 2], locations[0, 2] : locations[0, 3]] = 1
     # print(board[0, 0].astype(int))
-    locations_board = np.sum([board + subboard(def_board()[0], location)[0] for location in locations], axis = 0)
+    locations_board = np.sum([board + subboard(def_board()[0], location, diag)[0] for location in locations], axis = 0)
     solution = np.sum((locations_board >= 2).astype(int))
     # print(locations_board)
     return locations_board, solution
     
 print('printing board')
-print(locations()[1])
+print(locations(diagonal = True)[1])
 print('board printed')
 
+# print(np.diag(np.ones(3)))
 # print(np.zeros((3, 3)))
 # a = np.array([i for i in range(9)]).reshape((3, -1))
+# print(a)
+# print(a[1:3, 0])
 # print(np.sum((a > 3).astype(int)))
 # print(a[0:1, 0:3])
 # l = [0, 3]
