@@ -83,6 +83,45 @@ def age_fish2(tabs, maxage = 81):
             
     return tabs
 
+def age_fish3(tabs, maxage = 81):
+    tabs.sort()
+    tabs = np.array(tabs, dtype = np.ushort)
+    tabsD = {"0": sum((tabs == 0).astype(float)),
+             "1": sum((tabs == 1).astype(float)),
+             "2": sum((tabs == 2).astype(float)),
+             "3": sum((tabs == 3).astype(float)),
+             "4": sum((tabs == 4).astype(float)),
+             "5": sum((tabs == 5).astype(float)),
+             "6": 0,
+             "7": 0,
+             "8": 0}
+    print(tabsD)
+    # print(maxage)
+    for age in range(maxage):
+        t1 = time.time()
+        print("age: ", age) if not age%50 else 0
+        age = maxage - 1
+        tempKeyVal = 0
+        for key in tabsD.keys():
+            if key == "0":
+                # print(key)
+                tempKeyVal = tabsD[key]
+                tabsD[key] = tabsD[str(int(key) + 1)]
+            elif key == "8":
+                tabsD[key] = tempKeyVal
+                tabsD["6"] = tabsD["6"] + tempKeyVal
+            else:
+                tabsD[key] = tabsD[str(int(key) + 1)]
+        # print(tabsD)
+        # print(lim)
+        
+        # print(tabs)
+        
+        t2 = time.time()
+        # print("runtime: ", (t2 - t1))
+            
+    return tabsD
+
 def run1(age):
     fContent = np.array(load_files()[0]).astype(np.ushort())
     # print(np.where(fContent != 0))
@@ -97,12 +136,14 @@ def run2(age):
     fContent = np.array(load_files()[0]).astype(np.ushort).tolist()
     # print(np.where(fContent != 0))
     # print(fContent, load_files()[1])
-    fin_popul = age_fish2(tabs = fContent, maxage = age)
+    fin_popul = age_fish3(tabs = fContent, maxage = age)
     # print(fin_popul)
-    fin_pop_size = len(fin_popul)
+    fin_pop_size = 0
+    for key in fin_popul.keys(): 
+        fin_pop_size = fin_pop_size + fin_popul[key]
     print("Population size after " + str(age - 1) + " days: ")
     return fin_pop_size
 
 
 print(run1(81))
-print(run2(257))
+print(run2(256))
