@@ -54,13 +54,13 @@ def flatten(l):
     return [item for sublist in l for item in sublist]
 
 def age_fish2(tabs, maxage = 81):
+    tabs.sort()
     for age in range(maxage):
         t1 = time.time()
         print("age: ", age)
         age = maxage - 1
 
-        tabs.sort()
-        tabs = (np.array(tabs) - 1).tolist()
+        tabs = [tabs[i] - 1 for i in range(len(tabs))]
         safety = True
         try: 
             (tabs.index(0))
@@ -68,7 +68,8 @@ def age_fish2(tabs, maxage = 81):
             safety = False
         if safety:
             lim = tabs.index(0)
-            tabs[:lim] = [6 for i in range(lim)]
+            del tabs[:lim]
+            tabs = tabs + [6 for i in range(lim)]
             tabs = tabs + [8 for i in range(lim)]
         # print(lim)
         
