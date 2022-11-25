@@ -59,47 +59,21 @@ def age_fish2(tabs, maxage = 81):
         print("age: ", age)
         age = maxage - 1
 
+        tabs.sort()
+        tabs = (np.array(tabs) - 1).tolist()
+        safety = True
+        try: 
+            (tabs.index(0))
+        except ValueError:
+            safety = False
+        if safety:
+            lim = tabs.index(0)
+            tabs[:lim] = [6 for i in range(lim)]
+            tabs = tabs + [8 for i in range(lim)]
+        # print(lim)
+        
         # print(tabs)
-        # tabsSize = 0
-        # for elem in tabs:
-            # tabsSize = tabsSize + 1
-        # for index in range(tabsSize):
-            # print(np.array(tab) != 0)
-        notParents = np.where(np.array(tabs, dtype = int) != 0)
-            # print(notParents)
-            # print(notParents)
-        if 0 in tabs:
-                # print("0 in tab")
-                # print("No. of new fish1: ", sum((tab == 0).astype(int)))
-            new_fishes = tabs.count(0)
-            # print(new_fishes)
-                # print(tabs)
-            for i in range(new_fishes):
-                tabs.append(np.short(8))
-                # print(tab)
-                # print(len(tab[np.where(tab == 0)]))
-                # print(np.where(tabs == 0))
-                # print(tabs)
-                # print(np.where(np.array(tabs) == 0))
-            for elem in np.where(tabs == 0)[0]:
-                tabs[elem] = np.ushort(6)
-                # print(len(tab[np.where(tab == 6)]))
-            # print("shape: ", tab.shape)
-        for elem in notParents[0]:
-            tabs[elem] = tabs[elem] - np.ushort(1)
-            # tabs = np.array(tabs)
-            # print(tabs.shape)
-            # print(tabs[0])
-            # tabs = np.delete(tabs, [index], 0)
-            # print("Shape: ", tabs.shape)
-            # tabs = np.append(tabs, np.array([tab]), 0)
-            # tabs = tabs.append(tab)
-            # print()
-            # print(len(tab))
-            # size = 0
-            # for idx in tabs[tabsSize:]:
-            #     size = size + 1
-            # tabsSize = tabsSize + size
+        
         t2 = time.time()
         print("runtime: ", (t2 - t1))
             
