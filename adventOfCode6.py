@@ -55,22 +55,25 @@ def flatten(l):
 
 def age_fish2(tabs, maxage = 81):
     tabs.sort()
+    tabs = np.array(tabs, dtype = np.ushort)
     for age in range(maxage):
         t1 = time.time()
         print("age: ", age)
         age = maxage - 1
 
-        tabs = [tabs[i] - 1 for i in range(len(tabs))]
+        tabs = tabs - 1
         safety = True
         try: 
-            (tabs.index(0))
+            (tabs.tolist().index(0))
         except ValueError:
             safety = False
         if safety:
-            lim = tabs.index(0)
-            del tabs[:lim]
-            tabs = tabs + [6 for i in range(lim)]
-            tabs = tabs + [8 for i in range(lim)]
+            lim = tabs.tolist().index(0)
+            tabs = np.delete(tabs, range(lim))
+            # tabs = tabs + np.array([6 for i in range(lim)], dtype = np.ushort)
+            # tabs = tabs + np.array([8 for i in range(lim)], dtype = np.ushort)
+            tabs = np.concatenate((tabs, np.array([6 for i in range(lim)], dtype = np.ushort)))
+            tabs = np.concatenate((tabs, np.array([8 for i in range(lim)], dtype = np.ushort)))
         # print(lim)
         
         # print(tabs)
