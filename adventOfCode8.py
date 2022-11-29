@@ -31,23 +31,23 @@ def count_uniques(data):
     uniqueValues = [2, 4, 3, 7]  #No. of lines in a digit
     uniqueValues2 = [1, 4, 7, 8]  #Digit's value
     # unique_values_sum = {"1": 0, "4": 0, "7": 0, "8": 0}
-    uniques = []
+    uniqueOut = []
     numLines = lambda x: len(x)
     for line in data:
         # print(list((map(num_lines, line))))
-        uniques.append(list((map(numLines, line))))
-        # print(uniques)
-    uniques = np.array(uniques)
-    # print(uniques)
-    # print(uniques)
+        uniqueOut.append(list((map(numLines, line))))
+        # print(uniqueOut)
+    uniqueOut = np.array(uniqueOut)
+    # print(uniqueOut)
+    # print(uniqueOut)
     uniqueValuesTab = np.zeros((data.shape[0], len(data[0])))
     # print(uniqueValuesTab)
     for (index, el) in enumerate(uniqueValues):
         # print(uniqueValuesTab[index])
-        # print((uniques == el).astype(int) * el)
-        uniqueValues[index] = sum((uniques == el).astype(int))
-        uniqueValuesTab = uniqueValuesTab + (uniques == el).astype(int) * uniqueValues2[index]
-        # print((uniques == el).astype(int) * el)
+        # print((uniqueOut == el).astype(int) * el)
+        uniqueValues[index] = sum((uniqueOut == el).astype(int))
+        uniqueValuesTab = uniqueValuesTab + (uniqueOut == el).astype(int) * uniqueValues2[index]
+        # print((uniqueOut == el).astype(int) * el)
     # print(uniqueValuesTab)
     totalUniques = sum(uniqueValues)
     return totalUniques, uniqueValuesTab
@@ -109,26 +109,26 @@ def string_overlap(string1, string2):
     return overlap
     
 
-def is_069(uniInputs, nonUniInputs):
+def is_069(uniInputs, nonUniInMask):
     
     pass
 
 def run():
     fContent = load_files()
-    processed_data = data_processing2(data = fContent)
-    inputs = processed_data[:, 0]
-    outputs = processed_data[:, 1]
+    processedData = data_processing2(data = fContent)
+    inputs = processedData[:, 0]
+    outputs = processedData[:, 1]
     totalUniques = count_uniques(data = outputs)[0]
-    uniques = count_uniques(data = outputs)[1]
+    uniqueOut = count_uniques(data = outputs)[1]
     uniqueInputs = count_uniques(data = inputs)[1]  #unique inputs
     # print(np.array([row for row in outputs]))
-    nonUni = (np.array(uniques == 0).astype(int))  #a mask to pick out non-unique values from outputs
-    nonUniInputs = (np.array(uniqueInputs == 0).astype(int))  #a mask to pick out non-unique values from inputs
-    # nonUni = np.where(np.array(uniques == 0))
-    # print(nonUni)
-    inputs2 = np.array([[len(el) for el in row] for row in inputs]).reshape(uniqueInputs.shape) * nonUniInputs
-    outputs2 = np.array([[len(el) for el in row] for row in outputs]).reshape(uniques.shape) * nonUni
-    print(inputs2)
+    nonUniOutMask = (np.array(uniqueOut == 0).astype(int))  #a mask to pick out non-unique values from outputs
+    nonUniInMask = (np.array(uniqueInputs == 0).astype(int))  #a mask to pick out non-unique values from inputs
+    # nonUniOutMask = np.where(np.array(uniqueOut == 0))
+    # print(nonUniOutMask)
+    nonUniIn = np.array([[len(el) for el in row] for row in inputs]).reshape(uniqueInputs.shape) * nonUniInMask
+    nonUniOut = np.array([[len(el) for el in row] for row in outputs]).reshape(uniqueOut.shape) * nonUniOutMask
+    print(nonUniIn)
     # print(len(outputs[0][1]))
     decoded = np.array(decoding(ins = inputs, outs = outputs))
     decoded2 = []
