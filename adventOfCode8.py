@@ -109,7 +109,15 @@ def string_overlap(string1, string2):
     return overlap
     
 
-def is_069(uniInputs, nonUniInMask):
+def is_069(inputs, uniInputs, nonUniIn):
+    inputs = np.array([[el for el in row] for row in inputs]).reshape(inputs.shape)
+    newUni = np.zeros(inputs.shape)
+    newNonUni = np.zeros(inputs.shape)
+    uniIdx = np.where(uniInputs != 0)
+    nonUniIdx = np.where(nonUniIn != 0)
+    newUni[uniIdx] = [(len(el), el) for el in inputs.flatten()].reshape(inputs.shape)[uniIdx]
+    newNonUni[nonUniIdx] = [(len(el), el) for el in inputs.flatten()].reshape(inputs.shape)[nonUniIdx]
+    
     
     pass
 
@@ -121,6 +129,7 @@ def run():
     totalUniques = count_uniques(data = outputs)[0]
     uniqueOut = count_uniques(data = outputs)[1]
     uniqueInputs = count_uniques(data = inputs)[1]  #unique inputs
+    print(uniqueInputs)
     # print(np.array([row for row in outputs]))
     nonUniOutMask = (np.array(uniqueOut == 0).astype(int))  #a mask to pick out non-unique values from outputs
     nonUniInMask = (np.array(uniqueInputs == 0).astype(int))  #a mask to pick out non-unique values from inputs
@@ -128,7 +137,8 @@ def run():
     # print(nonUniOutMask)
     nonUniIn = np.array([[len(el) for el in row] for row in inputs]).reshape(uniqueInputs.shape) * nonUniInMask
     nonUniOut = np.array([[len(el) for el in row] for row in outputs]).reshape(uniqueOut.shape) * nonUniOutMask
-    print(nonUniIn)
+    # print(np.array([[el for el in row] for row in inputs]).reshape(uniqueInputs.shape))
+    print(nonUniIn.flatten())
     # print(len(outputs[0][1]))
     decoded = np.array(decoding(ins = inputs, outs = outputs))
     decoded2 = []
