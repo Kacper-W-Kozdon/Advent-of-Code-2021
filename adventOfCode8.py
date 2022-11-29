@@ -28,20 +28,29 @@ def data_preprocessing1(tab):
     return tab
 
 def count_uniques(data):
-    unique_values = [2, 4, 3, 7]
+    uniqueValues = [2, 4, 3, 7]  #No. of lines in a digit
+    uniqueValues2 = [1, 4, 7, 8]  #Digit's value
     # unique_values_sum = {"1": 0, "4": 0, "7": 0, "8": 0}
     uniques = []
-    num_lines = lambda x: len(x)
+    numLines = lambda x: len(x)
     for line in data:
         # print(list((map(num_lines, line))))
-        uniques.append(list((map(num_lines, line))))
+        uniques.append(list((map(numLines, line))))
         # print(uniques)
     uniques = np.array(uniques)
     # print(uniques)
-    for (index, el) in enumerate(unique_values):
-        unique_values[index] = sum((uniques == el).astype(int))
-    total_uniques = sum(unique_values)
-    return total_uniques
+    # print(uniques)
+    uniqueValuesTab = np.zeros((data.shape[0], len(data[0])))
+    # print(uniqueValuesTab)
+    for (index, el) in enumerate(uniqueValues):
+        # print(uniqueValuesTab[index])
+        # print((uniques == el).astype(int) * el)
+        uniqueValues[index] = sum((uniques == el).astype(int))
+        uniqueValuesTab = uniqueValuesTab + (uniques == el).astype(int) * uniqueValues2[index]
+        # print((uniques == el).astype(int) * el)
+    # print(uniqueValuesTab)
+    totalUniques = sum(uniqueValues)
+    return totalUniques, uniqueValuesTab
 
 def data_processing2(data):
     fContent = data
@@ -78,19 +87,48 @@ def decoding(ins, outs):
             # print(np.array(outs[index]) == elem)
             decodedNumber = decodedNumber + np.array(elem == np.array(outs[index])).astype(int) * (9 - idx)
             # print(decodedNumber)
-            if index == 0:
-                print((9 - idx))
-                print(decodedNumber)
+            # if index == 0:
+                # print((9 - idx))
+                # print(decodedNumber)
         listOfNum.append(decodedNumber)
             
     return listOfNum
+
+def string_overlap(string1, string2):
+    # string1Tup = (len(string1), string1)
+    # string2Tup = (len(string2), string2)
+    longerString = max([string1, string2], key = lambda string: len(string))
+    shorterString = min([string1, string2], key = lambda string: len(string))
+    overlap = 0
+    for letter in shorterString:
+        try:
+            letter in longerString          
+            overlap = overlap + 1 if letter in longerString else overlap
+        except ValueError:
+            overlap = overlap + 0
+    return overlap
+    
+
+def is_069(uniInputs, nonUniInputs):
+    
+    pass
 
 def run():
     fContent = load_files()
     processed_data = data_processing2(data = fContent)
     inputs = processed_data[:, 0]
     outputs = processed_data[:, 1]
-    total_uniques = count_uniques(data = outputs)
+    totalUniques = count_uniques(data = outputs)[0]
+    uniques = count_uniques(data = outputs)[1]
+    uniqueInputs = count_uniques(data = inputs)[1]  #unique inputs
+    # print(np.array([row for row in outputs]))
+    nonUni = (np.array(uniques == 0).astype(int))  #a mask to pick out non-unique values from outputs
+    nonUniInputs = (np.array(uniqueInputs == 0).astype(int))  #a mask to pick out non-unique values from inputs
+    # nonUni = np.where(np.array(uniques == 0))
+    # print(nonUni)
+    inputs2 = np.array([[len(el) for el in row] for row in inputs]).reshape(uniqueInputs.shape) * nonUniInputs
+    outputs2 = np.array([[len(el) for el in row] for row in outputs]).reshape(uniques.shape) * nonUni
+    print(inputs2)
     # print(len(outputs[0][1]))
     decoded = np.array(decoding(ins = inputs, outs = outputs))
     decoded2 = []
@@ -108,10 +146,11 @@ def run():
         # sumN = sumN + float(el)
     # print(sumN)
     result = sum(np.array(decoded2).astype(float))
-    return total_uniques, result
+    return totalUniques, result
 # print(load_files()[0])
 # print(data_preprocessing(load_files())[1])
 print(run())
+print(string_overlap("adfg", "af"))
 
 
 '''
@@ -120,5 +159,11 @@ w oparciu o przekrycie z unikatowymi (1, 4, 7, 8). Przykładowo:
 2, 5, 3 mają tyle samo kresek
 3 z 8 ma 6, z 7 ma 3, z 4 ma 3, z 1 ma 2
 5 z 8 ma 6, z 7 ma 2, z 4 ma 3, z 1 ma 1
-2 z 8 ma , z 7 ma 2, z 4 ma 2, z 1 ma 1
+2 z 8 ma 6, z 7 ma 2, z 4 ma 2, z 1 ma 1
+
+5 w/ 4 has 3
+2 w/ 4 has 2
+6 w/ 7 has 2, w/ 3 has 5
+9 w/ 7 has 3, w/ 3 has 5
+0 w/ 7 has 3, w/ 3 has 4
 '''
