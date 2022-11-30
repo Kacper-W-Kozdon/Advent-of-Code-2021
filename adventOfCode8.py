@@ -110,16 +110,66 @@ def string_overlap(string1, string2):
     
 
 def is_069(inputs, uniInputs, nonUniIn):
-    inputs = np.array([[el for el in row] for row in inputs]).reshape(inputs.shape)
-    newUni = np.zeros(inputs.shape)
-    newNonUni = np.zeros(inputs.shape)
+    inputs = np.array([[el for el in row] for row in inputs]).reshape(uniInputs.shape)
+    newUni = np.zeros(inputs.shape).astype(int).astype(str)
+    newNonUni = np.zeros(inputs.shape).astype(int).astype(str)
     uniIdx = np.where(uniInputs != 0)
     nonUniIdx = np.where(nonUniIn != 0)
-    newUni[uniIdx] = [(len(el), el) for el in inputs.flatten()].reshape(inputs.shape)[uniIdx]
-    newNonUni[nonUniIdx] = [(len(el), el) for el in inputs.flatten()].reshape(inputs.shape)[nonUniIdx]
+    newUni[uniIdx] = np.array([el for el in inputs.flatten()]).reshape(uniInputs.shape)[uniIdx]
+    newNonUni[nonUniIdx] = np.array([el for el in inputs.flatten()]).reshape(uniInputs.shape)[nonUniIdx]
+    inputs069 = np.zeros(uniInputs.shape)
+    # print("shape: ", inputs069.shape)
+    # print(uniInputs.shape)
+    # print(newUni)
+    decoder = {"2": [1, 2, 2, 5], "3": [2, 3, 3, 5], "5": [1, 2, 3, 5], "6": [1, 2, 3, 6], 
+            "9": [2, 3, 4, 6], "0": [2, 3, 3, 6]}
+    code = [0, 0, 0, 0]
+    # print(code.pop())
+    # print(code)
+    # code.pop()
+    # print(code)
+    for (index, nonUniRow) in enumerate(newNonUni):
+        
+        for (idx, nonUniN) in enumerate(nonUniRow):   
+            # print(nonUniN != "0")
+            if nonUniN != "0":
+                # print(code)
+                code.pop()
+                code.pop()
+                code.pop()
+                code.pop()
+                
+                for (i, uniN) in enumerate (newUni[index]):
+                    # print(nonUniN, uniN)
+                    # print(uniN != "0")
+                    if uniN != "0":
+                        code.append(string_overlap(nonUniN, uniN))
+                code.sort()
+                # print(code)
+                for (dIdx, key) in enumerate(decoder.keys()):
+                    if code == decoder[key]:
+                        inputs069[index, idx] = int(list(decoder.keys())[dIdx])
+                        # print(int(list(decoder.keys())[dIdx]))
+                        
+    # print(list(code.keys())[1])
+    # print("2, 3, 5, 6, 9, 0: ", inputs069)
+    print()
+    print()
+    
+    '''
+       2   3   5   6   9   0
+    1  1   2   1   1   2   2
+    4  2   3   3   3   4   3
+    7  2   3   2   2   3   3
+    8  5   5   5   6   6   6
     
     
-    pass
+    '''
+    
+    print(sorted(list(uniInputs[0] + inputs069[0])))
+    decoded = uniInputs + inputs069
+    print(decoded)
+    return decoded
 
 def run():
     fContent = load_files()
@@ -129,7 +179,7 @@ def run():
     totalUniques = count_uniques(data = outputs)[0]
     uniqueOut = count_uniques(data = outputs)[1]
     uniqueInputs = count_uniques(data = inputs)[1]  #unique inputs
-    print(uniqueInputs)
+    # print(uniqueInputs)
     # print(np.array([row for row in outputs]))
     nonUniOutMask = (np.array(uniqueOut == 0).astype(int))  #a mask to pick out non-unique values from outputs
     nonUniInMask = (np.array(uniqueInputs == 0).astype(int))  #a mask to pick out non-unique values from inputs
@@ -138,7 +188,8 @@ def run():
     nonUniIn = np.array([[len(el) for el in row] for row in inputs]).reshape(uniqueInputs.shape) * nonUniInMask
     nonUniOut = np.array([[len(el) for el in row] for row in outputs]).reshape(uniqueOut.shape) * nonUniOutMask
     # print(np.array([[el for el in row] for row in inputs]).reshape(uniqueInputs.shape))
-    print(nonUniIn.flatten())
+    is_069(inputs, uniqueInputs, nonUniIn)
+    # print(nonUniIn.flatten())
     # print(len(outputs[0][1]))
     decoded = np.array(decoding(ins = inputs, outs = outputs))
     decoded2 = []
@@ -159,8 +210,15 @@ def run():
     return totalUniques, result
 # print(load_files()[0])
 # print(data_preprocessing(load_files())[1])
+# print(np.array(["ab"]))
+
+lista = [1, 0, 3, 2, 5]
+lista.pop()
+lista.pop()
+# print(lista)
+# print(sort(lista))
 print(run())
-print(string_overlap("adfg", "af"))
+# print(string_overlap("adfg", "af"))
 
 
 '''
