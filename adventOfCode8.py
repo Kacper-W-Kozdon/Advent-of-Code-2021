@@ -171,6 +171,16 @@ def is_069(inputs, uniInputs, nonUniIn):
     print(decoded)
     return decoded
 
+def decode_output(inputs, decodedInputs, outputs):
+    decodedOutputs = np.zeros((len(outputs), len(outputs[0])))
+    for index, row in enumerate(outputs):
+        for idx, output in enumerate(row):
+            for i, inputN in enumerate(inputs[index]):
+                if "".join(sorted(inputN)) == "".join(sorted(output)):
+                    decodedOutputs[index, idx] = decodedInputs[index, i]
+    # print(decodedOutputs)
+    return(decodedOutputs)
+
 def run():
     fContent = load_files()
     processedData = data_processing2(data = fContent)
@@ -188,7 +198,7 @@ def run():
     nonUniIn = np.array([[len(el) for el in row] for row in inputs]).reshape(uniqueInputs.shape) * nonUniInMask
     nonUniOut = np.array([[len(el) for el in row] for row in outputs]).reshape(uniqueOut.shape) * nonUniOutMask
     # print(np.array([[el for el in row] for row in inputs]).reshape(uniqueInputs.shape))
-    is_069(inputs, uniqueInputs, nonUniIn)
+    decodedInputs = is_069(inputs, uniqueInputs, nonUniIn)
     # print(nonUniIn.flatten())
     # print(len(outputs[0][1]))
     decoded = np.array(decoding(ins = inputs, outs = outputs))
@@ -206,8 +216,12 @@ def run():
     # for el in decoded2:
         # sumN = sumN + float(el)
     # print(sumN)
-    result = sum(np.array(decoded2).astype(float))
-    return totalUniques, result
+    decodedOutputs = decode_output(inputs, decodedInputs, outputs)
+    # result = 0
+    decodedOutputsSum = sum(decodedOutputs[:, 0] * 1000 + decodedOutputs[:, 1] * 100 + decodedOutputs[:, 2] * 10 + decodedOutputs[:, 3])
+    print(len(outputs), len(outputs[0]))
+    # result = sum(np.array(decoded2).astype(float))
+    return totalUniques, decodedOutputsSum
 # print(load_files()[0])
 # print(data_preprocessing(load_files())[1])
 # print(np.array(["ab"]))
